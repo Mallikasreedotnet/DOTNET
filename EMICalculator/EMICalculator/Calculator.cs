@@ -8,6 +8,29 @@ namespace EMICalculator
 {
     public class Calculator
     {
+        public string Name { get; set; }
+        
+        //public DateTime LastDate { get; set; }
+
+        public string Address { get; set; }
+
+        public string Licence { get; set; }
+
+        public int Amount { get; set; }
+
+        public decimal TotalAmount { get; set; }
+
+        public Calculator(string name, string address,string licence)
+        {
+            Name= name;
+            Address= address;
+           
+               Licence= licence;
+            Amount= 0;
+            TotalAmount= 0;
+        }
+       
+
         public static void Calculation(long Amount)
         {
             float Percentage = (Amount / 100)*5;
@@ -22,7 +45,12 @@ namespace EMICalculator
             long Totalamount = Amount + (percentage * Months);
             long Monthpay = Totalamount / Months;
             return Monthpay;
-            }
+         }
+       
+
+        public int Months { get; set; }
+
+        
 
         }
 }
