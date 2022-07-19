@@ -35,13 +35,30 @@ if (File.Exists(Path.Combine(directoryPath, fileName)))
             Add(adding);
 
         }
+        else if (value != "no")
+        {
+            Console.WriteLine("Please enter valid Input");
+            Console.WriteLine("Do you want Adding Employees Details please enter Yes else No");
+            string addingResult = Console.ReadLine();
+            Add(addingResult);
+        }
     }
     Console.WriteLine("Display the Employee Details type yes");
     string displayDetails = Console.ReadLine();
-    StringBuilder employees = employeeService.GetEmployees();
-    Console.WriteLine("Id \t\t\t\t\t  Name \t Designation");
-    Console.WriteLine(employees);
-   
+    if (displayDetails == "yes")
+    {
+        StringBuilder employees = employeeService.GetEmployees();
+        Console.WriteLine("Id \t\t\t\t\t  Name \t Designation");
+        Console.WriteLine(employees);
+    }
+    Console.WriteLine("Do you want delete the file plase enter yes");
+    string delete = Console.ReadLine();
+    if (delete == "yes")
+    {
+        employeeService.DeleteEmployees();
+        Console.WriteLine("Successfully delete the file");
+    }
+
     //var afroz = employeeService.AddEmployee(new Employee { Name = "Afroz", Designation = "Asst.Programmer" });
     //var mallika = employeeService.AddEmployee(new Employee { Name = "Mallika", Designation = "Associate Engineer" });
     //Console.WriteLine($"Employees added successfully. Here are thier newly created IDs:{afroz.Name}:{afroz.Id},{mallika.Name}:{mallika.Id}");

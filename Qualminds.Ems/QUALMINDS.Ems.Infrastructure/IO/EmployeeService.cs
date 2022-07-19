@@ -61,12 +61,12 @@ namespace Qualminds.Ems.Infrastructure.IO
         }
         public void DeleteEmployees()
         {
-            //File.Delete(_filepath);
+            File.Delete(_filepath);
         }
 
-        public void DeleteEmployee()
-        {
-            throw new NotImplementedException();
-        }
+        //public void DeleteEmployee()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
