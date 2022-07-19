@@ -1,7 +1,6 @@
 ﻿using Qualminds.Ems.Core.ContractsandInfrastructure;
 using Qualminds.Ems.Core.Entities;
 using Qualminds.Ems.Infrastructure.IO;
-
 using System.Text;
 using System.Text.Json;
 
