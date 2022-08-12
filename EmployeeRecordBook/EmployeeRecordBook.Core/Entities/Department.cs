@@ -1,9 +1,13 @@
 ﻿namespace EmployeeRecordBook.Core.Entities
 {
-    public class Department
+    public partial class Department
     {
-        public int DepartmentId { get; set; }
-        public string DepartmentName { get; set; }
-        public List<Employee> Employees { get; set; }
+        public Department()
+        {
+            Employees = new HashSet<Employee>();
+        }
+        public int Id { get; set; }
+        public string Name { get; set; } = null!;
+        public virtual ICollection<Employee> Employees { get; set; }
     }
 }

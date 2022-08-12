@@ -23,48 +23,48 @@ namespace EmployeeRecordBook.Infrastructure.Migrations
 
             modelBuilder.Entity("EmployeeRecordBook.Core.Entities.Department", b =>
                 {
-                    b.Property<int>("DepartmentId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"), 1L, 1);
-
-                    b.Property<string>("DepartmentName")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
-                    b.HasKey("DepartmentId");
+                    b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Department", (string)null);
                 });
 
             modelBuilder.Entity("EmployeeRecordBook.Core.Entities.Employee", b =>
                 {
-                    b.Property<int>("EmployeeId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("Salary")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(12,2)");
 
-                    b.HasKey("EmployeeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employee", (string)null);
                 });
 
             modelBuilder.Entity("EmployeeRecordBook.Core.Entities.Employee", b =>
@@ -72,8 +72,8 @@ namespace EmployeeRecordBook.Infrastructure.Migrations
                     b.HasOne("EmployeeRecordBook.Core.Entities.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Employee_Department");
 
                     b.Navigation("Department");
                 });

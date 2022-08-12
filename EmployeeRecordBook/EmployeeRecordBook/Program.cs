@@ -1,50 +1,93 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using AutoMapper;
+using EmployeeRecordBook.Configurations;
+using EmployeeRecordBook.Core.Contracts.Infrastructure;
 using EmployeeRecordBook.Core.Entities;
-using EmployeeRecordBook.Core.Infrastructure.Repositories;
 using EmployeeRecordBook.Infrastructure.Data;
 using EmployeeRecordBook.Infrastructure.Repositories;
+using EmployeeRecordBook.ViewModels;
+
+Console.WriteLine("Hello, World!");
+
+#region Configure and Register AutoMapper
+var config = new MapperConfiguration(config => config.AddProfile(new AutoMapperProfile()));
+IMapper mapper = config.CreateMapper();
+
+#endregion
 
 
 
-//var departmentRepository = new DepartmentRepository();
-//departmentRepository.Create(new Department() { DepartmentName = "HR" });
-//departmentRepository.Create(new Department() { DepartmentName = "IT" });
-//departmentRepository.Create(new Department() { DepartmentName = "Accouting" });
+//IDepartmentRepository departmentRepository = new DepartmentRepository();
+//await departmentRepository.CreateAsync(new Department() { Id = 1, Name = "HR" });
 
-using(var employeeContext = new EmployeeContext())
+
+//await departmentRepository.CreateRangeAsync(
+//   new List<Department>
+//   {
+//      new Department() { Id = 2, Name =  "IT" },
+//      new Department() { Id = 3, Name = "Accounting" }
+//   }
+//   );
+
+using (var employeeContext = new EmployeeContext())
 {
     IEmployeeRepository employeeRepository = new EmployeeRepository(employeeContext);
-    var anil = await employeeRepository.CreateAsync(new Employee
+
+    var emp = await employeeRepository.GetEmployeesAsync("Id", "des");
+    foreach (var item in emp)
     {
-        Name = "Anil Kumar",
-        Email="anil@gmail.com",
-        Salary=10000m,
-        DepartmentId=1
-    });
+        Console.WriteLine($"employee:{item.Id} {item.Name} {item.Email} {item.Salary} ");
+    }
 
-    var sunil = await employeeRepository.CreateAsync(new Employee
-    {
-        Name = "Sunil Kumar",
-        Email = "sunil@gmail.com",
-        Salary = 10000m,
-        DepartmentId = 2
-    });
-    Console.WriteLine($"Created Employees : {anil.EmployeeId} {anil.Name},{sunil.EmployeeId} {sunil.Name}");
+    //await employeeRepository.CreateRangeAsync(
+    //    new List<Employee>
+    //    {
+    //    new Employee() {Name="Sunil Kumar",Email="sunil@global.com",Salary=10600m,DepartmentId=2},
+    //    new Employee() {Name="mohan sachit",Email="mohansachit@global.com",Salary=12600m,DepartmentId=1},
+    //    new Employee() {Name="mohit arya",Email="mohitarya@global.com",Salary=15600m,DepartmentId=2},
+    //    new Employee() {Name="parmeshwar savrate",Email="parmeshwarsavrate@global.com",Salary=16600m,DepartmentId=2},
+    //    new Employee() {Name="samvidth",Email="samvidth@gmail.com",Salary=13600m,DepartmentId=3},
+    //    new Employee() {Name="harish",Email="harish@global.com",Salary=14600m,DepartmentId=1},
+    //    new Employee() {Name="mahindra",Email="mahindra@global.com",Salary=13300m,DepartmentId=1},
+    //    new Employee() {Name="raj",Email="raj@global.com",Salary=11600m,DepartmentId=3},
+    //    new Employee() {Name="rahul",Email="rahul@global.com",Salary=10600m,DepartmentId=2}
+    //    });
+    //var anilVm = new EmployeeVm
+    //{
+    //    Name = "Anil Kumar",
+    //    Email = "anil@global.com",
+    //    Salary = 10000m,
+    //    DepartmentId = 1
+    //};
+    // Do validation and other formatting on View Model received from UI.
 
-    var employees = await employeeRepository.GetEmployeesAsync();
-    Console.WriteLine($"Total Employee Records: {employees.Count()}");
+    // Transform your VM to Entity which can be saved to DB.
+    //var anilEntity = mapper.Map<EmployeeVm, Employee>(anilVm);
 
-    var updatedAnilData = new Employee
-    {
-        Name = "Anil Kumar",
-        Email = "anil@gmail.com",
-        Salary = 12000m,
-        DepartmentId = 1
-    };
-    var updatedEmployee = await employeeRepository.UpdateAsync(anil.EmployeeId,updatedAnilData);
-    Console.WriteLine($"Updated Employees : {updatedEmployee.EmployeeId} {updatedEmployee.Name} {updatedEmployee.Email} {updatedEmployee.Salary}");
+    //var anil = await employeeRepository.CreateAsync(anilEntity);
+    //var sunil = await employeeRepository.CreateAsync(new Employee
+    //{
+    //    Name = "Sunil Kumar",
+    //    Email = "sunil@global.com",
+    //    Salary = 10600m,
+    //    DepartmentId = 2
+    //});
+    //Console.WriteLine($"Created Employees: {anil.Id} {anil.Name}, {sunil.Id} {sunil.Name}");
 
-    await employeeRepository.DeleteAsync(sunil?.EmployeeId??0);
-    var deletedRecord = await employeeRepository.GetEmployeeAsync(sunil?.EmployeeId??0);
-    Console.WriteLine($"Was record deleted successfully? {deletedRecord == null : true ? false}");
+    //var employees = await employeeRepository.GetEmployeesAsync();
+    //Console.WriteLine($"Total Employee Records: {employees.Count()}");
+
+    //var updatedAnilData = new Employee
+    //{
+    //    Name = "Anil Kumar",
+    //    Email = "anil@email.com",
+    //    Salary = 12000m,
+    //    DepartmentId = 1
+    //};
+    //var udatedEmployee = await employeeRepository.UpdateAsync(anil.Id, updatedAnilData);
+    //Console.WriteLine($"Updated Employee: {udatedEmployee.Id} {udatedEmployee.Name} {udatedEmployee.Email} {udatedEmployee.Salary}");
+
+    //await employeeRepository.DeleteAsync(sunil?.Id ?? 0);
+
+    //var deletedRecord = await employeeRepository.GetEmployeeAsync(sunil?.Id ?? 0);
+    //Console.WriteLine($"Was record deleted successfully? {deletedRecord == null: true ? false}");
 }
