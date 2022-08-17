@@ -8,6 +8,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
     public class EmployeeRepository : IEmployeeRepository
     {
         private readonly EmployeeContext _employeeContext;
+
         public EmployeeRepository(EmployeeContext employeeContext)
         {
             _employeeContext = employeeContext;
@@ -29,25 +30,17 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
         }
 
 
-        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(/*int pageIndex,int pageSize,*/ string sortField, string sortorder = "asc", string? filterText = null)
+        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(int pageIndex,int pageSize, string sortField, string sortOrder = "asc", string? filterText = null)
         {
-
-            //var employeeQuery = from employee in _employeeContext.Employees.Include(e => e.Department)
-            //                    select new EmployeeDto
-            //                    {
-            //                        Id = employee.Id,
-            //                        Name = employee.Name,
-            //                        Salary = employee.Salary,
-            //                        DepartmentName = employee.Department.Name
-            //                    };
-
-            if (sortorder == "des")
+            if (sortOrder == "desc")
             {
-                IEnumerable<EmployeeDto> empquery = null;
+
+                IEnumerable<EmployeeDto> empQuery =new List<EmployeeDto>();
+
                 switch (sortField)
                 {
                     case "Id":
-                        empquery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Id)
+                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Id)
                                    select new EmployeeDto
                                    {
                                        Id = employee.Id,
@@ -59,7 +52,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                         break;
 
                     case "Name":
-                        empquery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Name)
+                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Name)
                                    select new EmployeeDto
                                    {
                                        Id = employee.Id,
@@ -70,7 +63,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                                    };
                         break;
                     case "Email":
-                        empquery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Email)
+                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Email)
                                    select new EmployeeDto
                                    {
                                        Id = employee.Id,
@@ -81,7 +74,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                                    };
                         break;
                     case "Salary":
-                        empquery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Salary)
+                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Salary)
                                    select new EmployeeDto
                                    {
                                        Id = employee.Id,
@@ -96,15 +89,15 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                         //break;
 
                 }
-                return empquery;
+                return  empQuery.Skip((pageIndex-1)*pageSize).Take(pageSize);
             }
             else
             {
-                IEnumerable<EmployeeDto> empquery = null;
+                IEnumerable<EmployeeDto> empQuery = null;
                 switch (sortField)
                 {
                     case "Id":
-                        empquery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Id)
+                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Id)
                                    select new EmployeeDto
                                    {
                                        Id = employee.Id,
@@ -116,7 +109,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                         break;
 
                     case "Name":
-                        empquery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Name)
+                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Name)
                                    select new EmployeeDto
                                    {
                                        Id = employee.Id,
@@ -127,7 +120,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                                    };
                         break;
                     case "Email":
-                        empquery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Email)
+                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Email)
                                    select new EmployeeDto
                                    {
                                        Id = employee.Id,
@@ -138,7 +131,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                                    };
                         break;
                     case "Salary":
-                        empquery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Salary)
+                        empQuery = await (from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Salary)
                                    select new EmployeeDto
                                    {
                                        Id = employee.Id,
@@ -146,11 +139,11 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                                        Email = employee.Email,
                                        Salary = employee.Salary,
                                        DepartmentName = employee.Department.Name
-                                   };
+                                   }).ToListAsync();
                         break;
                 }
-                return empquery;
-                //return await _employeeContext.Employees.ToListAsync();
+                return  empQuery.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+               // return await _employeeContext.Employees.ToListAsync();
                 //  return await employeeQuery.ToListAsync();  // Executes DB Query in DB and Get results.
             }
         }

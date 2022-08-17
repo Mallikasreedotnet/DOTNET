@@ -32,11 +32,12 @@ using (var employeeContext = new EmployeeContext())
 {
     IEmployeeRepository employeeRepository = new EmployeeRepository(employeeContext);
 
-    var emp = await employeeRepository.GetEmployeesAsync("Id", "des");
+    var emp = await employeeRepository.GetEmployeesAsync(1,3,"Id");
     foreach (var item in emp)
     {
         Console.WriteLine($"employee:{item.Id} {item.Name} {item.Email} {item.Salary} ");
     }
+    
 
     //await employeeRepository.CreateRangeAsync(
     //    new List<Employee>
