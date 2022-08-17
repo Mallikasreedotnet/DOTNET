@@ -28,126 +28,63 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                 await employeeContext.SaveChangesAsync();
             }
         }
+        IEnumerable<EmployeeDto> sortData;
 
-
-        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(int pageIndex,int pageSize, string sortField, string sortOrder = "asc", string? filterText = null)
+        public async Task<IEnumerable<EmployeeDto>> OrderBy(string sortField, IEnumerable<EmployeeDto> Collection, string sortOrder, int pageIndex, int pageSize)
         {
-            if (sortOrder == "desc")
+            switch (sortOrder)
             {
+                case "desc":
 
-                IEnumerable<EmployeeDto> empQuery =new List<EmployeeDto>();
+                    switch (sortField)
+                    {
+                        case "Id":
+                            return sortData = Collection.OrderByDescending(a => a.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Name":
+                            return sortData = Collection.OrderByDescending(a => a.Name).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Email":
+                            return sortData = Collection.OrderByDescending(a => a.Email).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Salary":
+                            return sortData = Collection.OrderByDescending(a => a.Salary).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        default:
+                            return sortData = Collection;
+                    }
+                case "asc":
 
-                switch (sortField)
-                {
-                    case "Id":
-                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Id)
-                                   select new EmployeeDto
-                                   {
-                                       Id = employee.Id,
-                                       Name = employee.Name,
-                                       Email = employee.Email,
-                                       Salary = employee.Salary,
-                                       DepartmentName = employee.Department.Name
-                                   };
-                        break;
-
-                    case "Name":
-                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Name)
-                                   select new EmployeeDto
-                                   {
-                                       Id = employee.Id,
-                                       Name = employee.Name,
-                                       Email = employee.Email,
-                                       Salary = employee.Salary,
-                                       DepartmentName = employee.Department.Name
-                                   };
-                        break;
-                    case "Email":
-                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Email)
-                                   select new EmployeeDto
-                                   {
-                                       Id = employee.Id,
-                                       Name = employee.Name,
-                                       Email = employee.Email,
-                                       Salary = employee.Salary,
-                                       DepartmentName = employee.Department.Name
-                                   };
-                        break;
-                    case "Salary":
-                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderByDescending(emp => emp.Salary)
-                                   select new EmployeeDto
-                                   {
-                                       Id = employee.Id,
-                                       Name = employee.Name,
-                                       Email = employee.Email,
-                                       Salary = employee.Salary,
-                                       DepartmentName = employee.Department.Name
-                                   };
-                        break;
-                        //default:
-                        //throw new ArgumentOutOfRangeException();
-                        //break;
-
-                }
-                return  empQuery.Skip((pageIndex-1)*pageSize).Take(pageSize);
+                    switch (sortField)
+                    {
+                        case "Id":
+                            return sortData = Collection.OrderBy(a => a.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Name":
+                            return sortData = Collection.OrderBy(a => a.Name).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Email":
+                            return sortData = Collection.OrderBy(a => a.Email).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Salary":
+                            return sortData = Collection.OrderBy(a => a.Salary).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        default:
+                            return sortData = Collection;
+                    }
             }
-            else
-            {
-                IEnumerable<EmployeeDto> empQuery = null;
-                switch (sortField)
-                {
-                    case "Id":
-                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Id)
-                                   select new EmployeeDto
-                                   {
-                                       Id = employee.Id,
-                                       Name = employee.Name,
-                                       Email = employee.Email,
-                                       Salary = employee.Salary,
-                                       DepartmentName = employee.Department.Name
-                                   };
-                        break;
-
-                    case "Name":
-                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Name)
-                                   select new EmployeeDto
-                                   {
-                                       Id = employee.Id,
-                                       Name = employee.Name,
-                                       Email = employee.Email,
-                                       Salary = employee.Salary,
-                                       DepartmentName = employee.Department.Name
-                                   };
-                        break;
-                    case "Email":
-                        empQuery = from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Email)
-                                   select new EmployeeDto
-                                   {
-                                       Id = employee.Id,
-                                       Name = employee.Name,
-                                       Email = employee.Email,
-                                       Salary = employee.Salary,
-                                       DepartmentName = employee.Department.Name
-                                   };
-                        break;
-                    case "Salary":
-                        empQuery = await (from employee in _employeeContext.Employees.Include(e => e.Department).OrderBy(emp => emp.Salary)
-                                   select new EmployeeDto
-                                   {
-                                       Id = employee.Id,
-                                       Name = employee.Name,
-                                       Email = employee.Email,
-                                       Salary = employee.Salary,
-                                       DepartmentName = employee.Department.Name
-                                   }).ToListAsync();
-                        break;
-                }
-                return  empQuery.Skip((pageIndex - 1) * pageSize).Take(pageSize);
-               // return await _employeeContext.Employees.ToListAsync();
-                //  return await employeeQuery.ToListAsync();  // Executes DB Query in DB and Get results.
-            }
+            return sortData;
         }
+        IEnumerable<EmployeeDto> empQuery;
+        IEnumerable<EmployeeDto> orderData;
+        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(int pageIndex, int pageSize, string sortField, string sortOrder = "asc", string? filterText = null)
+        {
+            empQuery = from employee in _employeeContext.Employees.Include(e => e.Department)
+                       where (filterText==null || employee.Name.Contains(filterText))
+                       select new EmployeeDto
+                       {
+                           Id = employee.Id,
+                           Name = employee.Name,
+                           Email = employee.Email,
+                           Salary = employee.Salary,
+                           DepartmentName = employee.Department.Name
+                       };
 
+            orderData = await OrderBy(sortField, empQuery, sortOrder, pageIndex, pageSize);
+            return orderData.ToList();
+        }
         public async Task<Employee> GetEmployeeAsync(int employeeId)
         {
             return await _employeeContext.Employees.FindAsync(employeeId);
@@ -174,16 +111,5 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
-
-
-        //public Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<Employee> UpdateAsync(int employeeId, Employee employee)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
