@@ -17,10 +17,17 @@ IMapper mapper = config.CreateMapper();
 using (var employeeContext = new EmployeeContext())
 {
     IEmployeeRepository employeeRepository = new EmployeeRepository(employeeContext);
-
-    var emp = await employeeRepository.GetEmployeesAsync(1,3,"Id");
-    foreach (var item in emp)
+    try
     {
-        Console.WriteLine($"employee:{item.Id} {item.Name} {item.Email} {item.Salary} ");
+
+        var emp = await employeeRepository.GetEmployeesAsync(1, 3, "Id", sortorder: "as");
+        foreach (var item in emp)
+        {
+            Console.WriteLine($"employee:{item.Id} {item.Name} {item.Email} {item.Salary} ");
+        }
+    }
+    catch(Exception e)
+    {
+        Console.WriteLine(e.Message);
     }
 }

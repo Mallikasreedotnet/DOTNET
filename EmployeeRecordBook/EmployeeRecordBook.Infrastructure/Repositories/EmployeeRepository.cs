@@ -28,61 +28,22 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
                 await employeeContext.SaveChangesAsync();
             }
         }
-        IEnumerable<EmployeeDto> sortData;
-
-        public async Task<IEnumerable<EmployeeDto>> OrderBy(string sortField, IEnumerable<EmployeeDto> Collection, string sortOrder, int pageIndex, int pageSize)
-        {
-            switch (sortOrder)
-            {
-                case "desc":
-
-                    switch (sortField)
-                    {
-                        case "Id":
-                            return sortData = Collection.OrderByDescending(a => a.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                        case "Name":
-                            return sortData = Collection.OrderByDescending(a => a.Name).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                        case "Email":
-                            return sortData = Collection.OrderByDescending(a => a.Email).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                        case "Salary":
-                            return sortData = Collection.OrderByDescending(a => a.Salary).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                        default:
-                            return sortData = Collection;
-                    }
-                case "asc":
-
-                    switch (sortField)
-                    {
-                        case "Id":
-                            return sortData = Collection.OrderBy(a => a.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                        case "Name":
-                            return sortData = Collection.OrderBy(a => a.Name).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                        case "Email":
-                            return sortData = Collection.OrderBy(a => a.Email).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                        case "Salary":
-                            return sortData = Collection.OrderBy(a => a.Salary).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-                        default:
-                            return sortData = Collection;
-                    }
-            }
-            return sortData;
-        }
-        IEnumerable<EmployeeDto> empQuery;
-        IEnumerable<EmployeeDto> orderData;
         public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(int pageIndex, int pageSize, string sortField, string sortOrder = "asc", string? filterText = null)
         {
-            empQuery = from employee in _employeeContext.Employees.Include(e => e.Department)
-                       where (filterText==null || employee.Name.Contains(filterText))
-                       select new EmployeeDto
-                       {
-                           Id = employee.Id,
-                           Name = employee.Name,
-                           Email = employee.Email,
-                           Salary = employee.Salary,
-                           DepartmentName = employee.Department.Name
-                       };
+            IEnumerable<EmployeeDto> empList;
+            IEnumerable<EmployeeDto> orderData;
+            empList = await (from employee in _employeeContext.Employees.Include(e => e.Department)
+                             where (filterText == null || employee.Name.Contains(filterText))
+                             select new EmployeeDto
+                             {
+                                 Id = employee.Id,
+                                 Name = employee.Name,
+                                 Email = employee.Email,
+                                 Salary = employee.Salary,
+                                 DepartmentName = employee.Department.Name
+                             }).ToListAsync();
 
-            orderData = await OrderBy(sortField, empQuery, sortOrder, pageIndex, pageSize);
+            orderData = OrderBy(sortField, empList, sortOrder, pageIndex, pageSize);
             return orderData.ToList();
         }
         public async Task<Employee> GetEmployeeAsync(int employeeId)
@@ -106,10 +67,49 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
             _employeeContext.Employees.Remove(employeeToBeDeleted);
             await _employeeContext.SaveChangesAsync();
         }
-
         public Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
         {
             throw new NotImplementedException();
+        }
+        private IEnumerable<EmployeeDto> OrderBy(string sortField, IEnumerable<EmployeeDto> collection, string sortOrder, int pageIndex, int pageSize)
+        {
+            IEnumerable<EmployeeDto> sortData = new List<EmployeeDto>();
+            switch (sortOrder)
+            {
+                case "desc":
+
+                    switch (sortField)
+                    {
+                        case "Id":
+                            return sortData = collection.OrderByDescending(a => a.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Name":
+                            return sortData = collection.OrderByDescending(a => a.Name).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Email":
+                            return sortData = collection.OrderByDescending(a => a.Email).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Salary":
+                            return sortData = collection.OrderByDescending(a => a.Salary).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        default:
+                            return sortData = collection;
+                            // throw new ArgumentNullException();
+                    }
+                case "asc":
+
+                    switch (sortField)
+                    {
+                        case "Id":
+                            return sortData = collection.OrderBy(a => a.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Name":
+                            return sortData = collection.OrderBy(a => a.Name).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Email":
+                            return sortData = collection.OrderBy(a => a.Email).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        case "Salary":
+                            return sortData = collection.OrderBy(a => a.Salary).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                        default:
+                            return sortData = collection;
+                            // throw new ArgumentNullException();
+                    }
+            }
+            return sortData;
         }
     }
 }
