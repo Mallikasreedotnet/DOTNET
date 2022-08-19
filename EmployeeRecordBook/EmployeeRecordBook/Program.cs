@@ -4,6 +4,7 @@ using EmployeeRecordBook.Core.Contracts.Infrastructure;
 using EmployeeRecordBook.Core.Entities;
 using EmployeeRecordBook.Infrastructure.Data;
 using EmployeeRecordBook.Infrastructure.Repositories;
+using EmployeeRecordBook.Infrastructure.Repositories.EntityFramework;
 using EmployeeRecordBook.ViewModels;
 
 Console.WriteLine("Hello, World!");
@@ -20,13 +21,13 @@ using (var employeeContext = new EmployeeContext())
     try
     {
 
-        var emp = await employeeRepository.GetEmployeesAsync(1, 3, "Id", sortorder: "as");
+        var emp = await employeeRepository.GetEmployeesAsync(1, 3, "Id", sortOrder: "desc");
         foreach (var item in emp)
         {
             Console.WriteLine($"employee:{item.Id} {item.Name} {item.Email} {item.Salary} ");
         }
     }
-    catch(Exception e)
+    catch(ArgumentException e)
     {
         Console.WriteLine(e.Message);
     }
