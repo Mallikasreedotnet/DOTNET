@@ -67,6 +67,20 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
             _employeeContext.Employees.Remove(employeeToBeDeleted);
             await _employeeContext.SaveChangesAsync();
         }
+        public async Task<IEnumerable<EmployeeDto>> GetEmployeeAsync()
+        {
+            var employeeQuery = (from employee in _employeeContext.Employees.Include(e => e.Department)
+                                 select new EmployeeDto
+                                 {
+                                     Id = employee.Id,
+                                     Name = employee.Name,
+                                     Salary = employee.Salary,
+                                     Email = employee.Email,
+                                     DepartmentName = employee.Department.Name
+                                 }).AsNoTracking();
+            //return await _employeeContext.Employees.ToListAsync();
+            return await employeeQuery.ToListAsync();  // Executes DB Query in DB and Get results.
+        }
         private IEnumerable<EmployeeDto> OrderBy(string sortField, IEnumerable<EmployeeDto> collection, string sortOrder, int pageIndex, int pageSize)
         {
             switch (sortOrder)

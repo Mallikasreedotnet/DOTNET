@@ -37,6 +37,12 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.Dapper
             var query = "Select * from Employee where Id = @employeeId";  // Recomendation: Use same name as the DB field name. 
             return (await _dbConnection.QueryAsync<Employee>(query, new { employeeId })).FirstOrDefault();
         }
+
+        public Task<IEnumerable<EmployeeDto>> GetEmployeeAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(int pageIndex, int pageSize, string sortField, string sortOrder = "asc", string? filterText = null)
         {
             throw new NotImplementedException();

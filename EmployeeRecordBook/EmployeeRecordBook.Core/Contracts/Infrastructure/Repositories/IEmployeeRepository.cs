@@ -7,6 +7,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
     {
         Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(int pageIndex, int pageSize, string sortField, string sortOrder = "asc", string? filterText = null);
         Task<Employee> GetEmployeeAsync(int employeeId);
+        Task<IEnumerable<EmployeeDto>> GetEmployeeAsync();
         Task<Employee> CreateAsync(Employee employee);
         Task CreateRangeAsync(IEnumerable<Employee> employees);
         Task DeleteAsync(int employeeId);
