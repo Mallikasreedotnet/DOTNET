@@ -8,7 +8,7 @@ namespace EmployeeRecordBook.Configurations
     {
         internal AutoMapperProfile()
         {
-            CreateMap<EmployeeVm, Employee>();
+            CreateMap<EmployeeVm, Employee>(); 
         }
     }
 }

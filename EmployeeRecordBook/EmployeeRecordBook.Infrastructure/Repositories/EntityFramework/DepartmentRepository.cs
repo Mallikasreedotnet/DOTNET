@@ -2,7 +2,7 @@
 using EmployeeRecordBook.Core.Entities;
 using EmployeeRecordBook.Infrastructure.Data;
 
-namespace EmployeeRecordBook.Infrastructure.Repositories
+namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
 {
     public class DepartmentRepository : IDepartmentRepository
     {
@@ -25,5 +25,4 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
             }
         }
     }
-
 }

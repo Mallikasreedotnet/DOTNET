@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace EmployeeRecordBook.Core.Entities
 {
     public partial class Employee
