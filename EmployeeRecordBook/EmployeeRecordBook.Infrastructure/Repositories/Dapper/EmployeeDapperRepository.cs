@@ -19,6 +19,23 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.Dapper
             var command = "Insert Employee(Name, Email, Salary, DepartmentId) Values(@Name, @Email, @Salary, @DepartmentId)";
             var result = await _dbConnection.ExecuteAsync(command, employee);
             return employee;
+            //try
+            //{
+            //    using (IDbConnection dbConnection = _dbConnection)
+            //    {
+            //        dbConnection.Open();
+            //        var employees = dbConnection.Query<Employee>("InsertRecord", commandType: CommandType.StoredProcedure);
+            //        dbConnection.Close();   
+            //        return employee;
+            //    }
+            //}
+            //catch(Exception ex)
+            //{
+            //    string errorMsg=ex.Message;
+
+            //}
+
+
         }
 
         public Task CreateRangeAsync(IEnumerable<Employee> employees)
